@@ -309,6 +309,32 @@ bool IRElectraAc::getTurbo(void) const {
   return _.Turbo;
 }
 
+/// Get the IFeel mode of the A/C.
+/// @return true, the setting is on. false, the setting is off.
+bool IRElectraAc::getIFeel(void) const {
+  return _.IFeel;
+}
+
+/// Set the IFeel mode of the A/C.
+/// @param[in] on true, the setting is on. false, the setting is off.
+void IRElectraAc::setIFeel(const bool on) {
+  _.IFeel = on;
+}
+
+/// Set the temperature for the IFeel mode.
+/// @param[in] temp The temperature in degrees celsius.
+void IRElectraAc::setIFeelTemp(const uint8_t temp) {
+  uint8_t newtemp = std::max(kElectraAcIFeelMinTemp, temp);
+  newtemp = std::min(kElectraAcIFeelMaxTemp, newtemp) + kElectraAcIFeelTempDelta;
+  _.IFeelTemp = newtemp;
+}
+
+/// Get the current temperature setting for the IFeel mode.
+/// @return The current setting for temp. in degrees celsius.
+uint8_t IRElectraAc::getIFeelTemp(void) const {
+  return std::min(kElectraAcIFeelTempDelta, _.IFeelTemp) - kElectraAcIFeelTempDelta;
+}
+
 /// Convert the current internal state into its stdAc::state_t equivalent.
 /// @return The stdAc equivalent of the native settings.
 stdAc::state_t IRElectraAc::toCommon(void) const {
